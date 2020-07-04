@@ -9,8 +9,7 @@ from keras.models import Sequential
 from keras.layers.core import Reshape,Dense,Dropout,Activation,Flatten
 from keras.layers.noise import GaussianNoise
 from keras.layers.convolutional import Conv2D, MaxPooling2D, ZeroPadding2D
-from keras.regularizers import *
-from keras.optimizers import adam
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle as pk
@@ -57,13 +56,11 @@ classes = mods
 dr = 0.5
 model = Sequential()
 model.add(Reshape(([1] + in_shp) , input_shape=in_shp))
-model.add(ZeroPadding2D((0 , 2) , data_format="channels_first"))
-model.add(Conv2D(256 , (1 , 3) , padding='valid' , activation="relu" , name="conv1" , init='glorot_uniform' ,
-                 data_format="channels_first"))
+model.add(ZeroPadding2D((0, 2), data_format="channels_first"))
+model.add(Conv2D(256, (1, 3), padding='valid', activation="relu", name="conv1", init='glorot_uniform', data_format="channels_first"))
 model.add(Dropout(dr))
-model.add(ZeroPadding2D((0 , 2) , data_format="channels_first"))
-model.add(Conv2D(80 , (2 , 3) , padding="valid" , activation="relu" , name="conv2" , init='glorot_uniform' ,
-                 data_format="channels_first"))
+model.add(ZeroPadding2D((0, 2), data_format="channels_first"))
+model.add(Conv2D(80, (2, 3), padding="valid", activation="relu", name="conv2", init='glorot_uniform', data_format="channels_first"))
 model.add(Dropout(dr))
 model.add(Flatten())
 model.add(Dense(256 , activation='relu' , init='he_normal' , name="dense1"))

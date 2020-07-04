@@ -10,9 +10,8 @@ from keras.layers.noise import GaussianNoise
 from keras.layers.convolutional import Conv2D, MaxPooling2D, ZeroPadding2D
 from keras.regularizers import *
 from keras.optimizers import adam
-import matplotlib.pyplot as plt
-import seaborn as sns
 import pickle as pk
+import keras
 import h5py
 
 os.environ["KERAS_BACKEND"] = "tensorflow"
@@ -31,23 +30,26 @@ X = np.vstack(X)
 
 np.random.seed(2016)
 n_examples = X.shape[0]
-n_train = n_examples * 0.5 #对半
+n_train = n_examples * 0.5
 train_idx = np.random.choice(range(0,n_examples), size=int(n_train), replace=False)
-test_idx = list(set(range(0,n_examples))-set(train_idx)) #label
+test_idx = list(set(range(0,n_examples))-set(train_idx))
 X_train = X[train_idx]
-X_test =  X[test_idx]
+X_test = X[test_idx]
+
+
 def to_onehot(yy):
     yy1 = np.zeros([len(yy), max(yy)+1])
     yy1[np.arange(len(yy)),yy] = 1
     return yy1
+
+
 trainy =list(map(lambda x: mods.index(lbl[x][0]), train_idx))
 Y_train = to_onehot(trainy)
 Y_test = to_onehot(list(map(lambda x: mods.index(lbl[x][0]), test_idx)))
-#%%
 in_shp = list(X_train.shape[1:])
 print (X_train.shape, in_shp)
 classes = mods
-#%%
+
 dr = 0.5
 model = Sequential()
 model.add(Reshape(([1]+in_shp), input_shape=in_shp))
@@ -76,10 +78,7 @@ history = model.fit(X_train,
                     epochs=epochs,
                     verbose=2,
                     validation_data=(X_test, Y_test),
-                    callbacks= [
-                        keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=True, mode='auto'),
-                        keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
-                    ])
+                    )
 
 model.load_weights(filepath)
 score = model.evaluate(X_test, Y_test, verbose=0, batch_size=batch_size)
